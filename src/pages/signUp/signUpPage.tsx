@@ -1,8 +1,7 @@
-import {useState} from 'react';
-import {Button, Form, Input, Spin} from 'antd';
-import {signUp} from "../../api/auth.api.ts";
-import {Link} from "react-router-dom";
-
+import { useState } from 'react';
+import { Button, Form, Input, Spin } from 'antd';
+import { signUp } from "../../api/auth.api.ts";
+import { Link } from "react-router-dom";
 
 const validateMessages = {
     required: '${label} обязательно!',
@@ -28,9 +27,10 @@ type ValuesType = {
 }
 
 export const SignUpPage = () => {
-    const [error, setError] = useState<null | string>(null);
+    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [successMessage, setSuccessMessage] = useState<string | null>()
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
     const onFinish = async (values: ValuesType) => {
         const formData = {
             email: values.email,
@@ -43,11 +43,11 @@ export const SignUpPage = () => {
         setLoading(true);
         try {
             await signUp(formData);
-            setSuccessMessage("Пользователь зарегистрирован упешно, Для входа нажмине sign in")
-            setError(null)
+            setSuccessMessage("Пользователь зарегистрирован успешно. Для входа нажмите Sign In.");
+            setError(null);
         } catch (error: any) {
             setError(error.response.data);
-
+            setSuccessMessage(null);
         } finally {
             setLoading(false);
         }
@@ -56,7 +56,6 @@ export const SignUpPage = () => {
     return (
         <>
             <Spin spinning={loading}>
-
                 <Form
                     name="registration-form"
                     onFinish={onFinish}
@@ -111,7 +110,6 @@ export const SignUpPage = () => {
                                 },
                             }),
                         ]}
-
                     >
                         <Input.Password />
                     </Form.Item>
@@ -126,24 +124,24 @@ export const SignUpPage = () => {
                     </Form.Item>
                     <Form.Item
                         name="phone"
-                        label="Phone"
+                        label="Телефон"
                         rules={[
                             { required: true, pattern: /^\+?[0-9]{10,15}$/, message: 'Должен быть допустимым номером телефона' },
                         ]}
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item style={{display:'flex', gap: '3px'}} label={null}>
+                    <Form.Item style={{ display: 'flex', gap: '3px' }} label={null}>
                         <Button type="primary" htmlType="submit">
-                            Registration
+                            Регистрация
                         </Button>
-                        {successMessage & <Link style={{fontSize: '60px'}} to='/login'>
-                            Sign in
-                        </Link> }
+                        {successMessage && <Link style={{ fontSize: '16px' }} to='/login'>
+                            Sign In
+                        </Link>}
                     </Form.Item>
                 </Form>
-                {error & <div style={{ color: 'red', marginTop: 16 }}>{error}</div>}
-                {successMessage & <div style={{color: 'green'}}>{successMessage}</div>}
+                {error && <div style={{ color: 'red', marginTop: 16 }}>{error}</div>}
+                {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
             </Spin>
         </>
     );
