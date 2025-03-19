@@ -1,6 +1,5 @@
 import axios from 'axios';
-import {LoginField} from "../types/fields.ts";
-
+import { LoginField } from "../types/fields.ts";
 
 let accessToken: string | null = localStorage.getItem('accessToken');
 
@@ -36,6 +35,7 @@ export async function signIn(authData: LoginField): Promise<AuthResponse> {
 export async function signUp(authData: any): Promise<AuthResponse> {
     const response = await authApiClient.post<AuthResponse>('/auth/signup', authData);
     accessToken = response.data.accessToken;
+    localStorage.setItem('accessToken', response.data.accessToken);
     localStorage.setItem('refreshToken', response.data.refreshToken);
     return response.data;
 }
@@ -44,10 +44,11 @@ export async function refreshAccessToken(): Promise<void> {
     const refreshToken = localStorage.getItem('refreshToken');
     try {
         const response = await authApiClient.post<AuthResponse>('/auth/refresh', { refreshToken });
+        localStorage.setItem('accessToken', response.data.accessToken);
         accessToken = response.data.accessToken;
         localStorage.setItem('refreshToken', response.data.refreshToken);
     } catch (error: any) {
-        if (error && error.response.status === 401) {
+        if (error) {
             redirectToLogin();
         } else {
             throw error;
@@ -57,14 +58,13 @@ export async function refreshAccessToken(): Promise<void> {
 
 export async function getUserProfile(): Promise<any> {
     if (!accessToken) {
-       await refreshAccessToken()
-        return;
+        await refreshAccessToken();
     }
     try {
         const response = await authApiClient.get('/user/profile');
         return response.data;
     } catch (error: any) {
-        if (error && error.response.status === 401) {
+        if (error.response && error.response.status === 401) {
             await refreshAccessToken();
             const response = await authApiClient.get('/user/profile');
             return response.data;
