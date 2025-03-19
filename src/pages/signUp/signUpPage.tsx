@@ -142,8 +142,8 @@ export const SignUpPage = () => {
                         </Link> }
                     </Form.Item>
                 </Form>
-                {error && <div style={{ color: 'red', marginTop: 16 }}>{error}</div>}
-                {successMessage && <div style={{color: 'green'}}>{successMessage}</div>}
+                {error & <div style={{ color: 'red', marginTop: 16 }}>{error}</div>}
+                {successMessage & <div style={{color: 'green'}}>{successMessage}</div>}
             </Spin>
         </>
     );
