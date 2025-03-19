@@ -15,7 +15,7 @@ export const LoginPage = () => {
         try {
             await signIn({ login: values.login, password: values.password });
             setLoggedIn(true);
-            navigate('/');
+            navigate('/profile');
         } catch (error: any) {
             console.log(error);
             if (error.response?.status === 401) {
