@@ -1,16 +1,27 @@
 import {getUserProfile, logOut} from "../../api/auth.api.ts";
 import {useQuery} from "react-query";
 import {Button} from "antd";
+import {useAuth} from "../../featers/AuthContext.tsx";
 
 
 
 export const Profile = () => {
-    const {data} = useQuery('userData', getUserProfile);
+    const {data, isLoading} = useQuery('userData', getUserProfile);
+    const {setLoggedIn } = useAuth();
+    const logOutHandler = () => {
+        try {
+            logOut()
+            setLoggedIn(false)
+        }
+        catch (e){
+
+        }
+    }
        return (
         <>
-            <Button onClick={logOut}>
-                Logout
-            </Button>
+        {!isLoading && <Button onClick={logOutHandler}>
+            Logout
+        </Button> }
             <ul style={{fontSize: 30}}>
 
                 <li>
