@@ -126,7 +126,7 @@ export const SignUpPage = () => {
                         name="phone"
                         label="Телефон"
                         rules={[
-                            { required: true, pattern: /^\+?[0-9]{10,15}$/, message: 'Должен быть допустимым номером телефона' },
+                            {pattern: /^\+?[0-9]{10,15}$/, message: 'Должен быть допустимым номером телефона' },
                         ]}
                     >
                         <Input />

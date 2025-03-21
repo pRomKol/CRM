@@ -19,9 +19,10 @@ type AuthResponse = {
     refreshToken: string;
 };
 
-function redirectToLogin() {
+export function logOut() {
     accessToken = null;
     localStorage.removeItem('refreshToken');
+    localStorage.removeItem('accessToken');
     window.location.href = '/login';
 }
 
@@ -49,7 +50,7 @@ export async function refreshAccessToken(): Promise<void> {
         localStorage.setItem('refreshToken', response.data.refreshToken);
     } catch (error: any) {
         if (error) {
-            redirectToLogin();
+            logOut();
         } else {
             throw error;
         }
