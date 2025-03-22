@@ -4,14 +4,14 @@ import { Button, Form, Input } from 'antd';
 import { signIn } from "../../api/auth.api.ts";
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from "../../featers/AuthContext.tsx";
-import { LoginField } from "../../types/fields.ts";
+import {AuthData} from "../../types/fields.ts";
 
 export const LoginPage = () => {
     const [error, setError] = useState<string | null>(null);
     const { setLoggedIn } = useAuth();
     const navigate = useNavigate();
 
-    const onFinish: FormProps<LoginField>['onFinish'] = async (values) => {
+    const onFinish: FormProps<AuthData>['onFinish'] = async (values) => {
         try {
             await signIn({ login: values.login, password: values.password });
             setLoggedIn(true);
@@ -22,6 +22,7 @@ export const LoginPage = () => {
                 setLoggedIn(false);
                 setError('Неверный логин или пароль');
             } else {
+                setLoggedIn(false);
                 setError(error.response?.data || 'ошибка при входе');
             }
         }

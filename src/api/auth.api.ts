@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { LoginField } from "../types/fields.ts";
+import {AuthData, Profile, UserRegistration} from "../types/fields.ts";
+
+
 
 let accessToken: string | null = localStorage.getItem('accessToken');
 
@@ -19,25 +21,23 @@ type AuthResponse = {
     refreshToken: string;
 };
 
-export function logOut() {
+export async function logOut() {
     accessToken = null;
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('accessToken');
     window.location.href = '/login';
+    return await authApiClient.post<string>('auth/logout')
 }
 
-export async function signIn(authData: LoginField): Promise<AuthResponse> {
+export async function signIn(authData: AuthData): Promise<AuthResponse> {
     const response = await authApiClient.post<AuthResponse>('/auth/signin', authData);
     accessToken = response.data.accessToken;
     localStorage.setItem('refreshToken', response.data.refreshToken);
     return response.data;
 }
 
-export async function signUp(authData: any): Promise<AuthResponse> {
-    const response = await authApiClient.post<AuthResponse>('/auth/signup', authData);
-    accessToken = response.data.accessToken;
-    localStorage.setItem('accessToken', response.data.accessToken);
-    localStorage.setItem('refreshToken', response.data.refreshToken);
+export async function signUp(authData: UserRegistration): Promise<Profile> {
+    const response = await authApiClient.post<Profile>('/auth/signup', authData);
     return response.data;
 }
 
@@ -50,24 +50,24 @@ export async function refreshAccessToken(): Promise<void> {
         localStorage.setItem('refreshToken', response.data.refreshToken);
     } catch (error: any) {
         if (error) {
-            logOut();
+            await logOut();
         } else {
             throw error;
         }
     }
 }
 
-export async function getUserProfile(): Promise<any> {
+export async function getUserProfile(): Promise<Profile> {
     if (!accessToken) {
         await refreshAccessToken();
     }
     try {
-        const response = await authApiClient.get('/user/profile');
+        const response = await authApiClient.get<Profile>('/user/profile');
         return response.data;
     } catch (error: any) {
         if (error.response && error.response.status === 401) {
             await refreshAccessToken();
-            const response = await authApiClient.get('/user/profile');
+            const response = await authApiClient.get<Profile>('/user/profile');
             return response.data;
         }
         throw error;
