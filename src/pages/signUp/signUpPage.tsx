@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Form, Input, Spin } from 'antd';
 import { signUp } from "../../api/auth.api.ts";
 import { Link } from "react-router-dom";
+import {UserRegistration} from "../../types/fields.ts";
 
 const validateMessages = {
     required: '${label} обязательно!',
@@ -17,26 +18,17 @@ const validateMessages = {
     },
 };
 
-type ValuesType = {
-    email: string;
-    login: string;
-    password: string;
-    phone: string;
-    username: string;
-    confirmPassword: string;
-}
-
 export const SignUpPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-    const onFinish = async (values: ValuesType) => {
+    const onFinish = async (values: UserRegistration) => {
         const formData = {
             email: values.email,
             login: values.login,
             password: values.password,
-            phoneNumber: values.phone,
+            phoneNumber: values.phoneNumber,
             username: values.username,
         };
 
