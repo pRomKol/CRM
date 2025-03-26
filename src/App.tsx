@@ -7,6 +7,7 @@ import React from "react";
 import {NavBar} from "./components/navBar/NavBar.tsx";
 import {AuthProvider} from "./featers/AuthContext.tsx";
 
+
 type Path = {
     path: string
     element: React.ReactNode
